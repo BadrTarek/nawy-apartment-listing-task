@@ -1,0 +1,11 @@
+
+
+
+
+export interface ApartmentFeature {
+    id: number;
+    name: string;
+    description: string;
+    createdAt: Date;
+    updatedAt?: Date;
+}
