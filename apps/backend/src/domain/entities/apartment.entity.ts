@@ -6,7 +6,8 @@ export interface Apartment {
     description: string;
     price: number;
     currency: Currency;
-    addressId: number;
+    areaId: number;
+    address: string;
     isAvailable: boolean;
     createdAt: Date;
     updatedAt?: Date;
