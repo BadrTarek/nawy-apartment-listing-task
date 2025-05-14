@@ -1,9 +1,11 @@
 import { IApartmentRepository } from "../../domain/interfaces/repositories/apartment-repository.interface";
 import { IApartmentFeatureMappingRepository } from "../../domain/interfaces/repositories/apartment-feature-mapping-repository.interface";
+import { IApartmentImageRepository } from "../../domain/interfaces/repositories/apartment-image-repository.interface";
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { DataSource, QueryRunner } from 'typeorm';
 import { ApartmentRepository } from "./repositories/apartment.repository";
 import { ApartmentFeatureMappingRepository } from "./repositories/apartment-feature-mapping.repository";
+import { ApartmentImageRepository } from "./repositories/apartment-image.repository";
 
 
 export class UnitOfWork implements IUnitOfWork {
@@ -11,6 +13,7 @@ export class UnitOfWork implements IUnitOfWork {
     private queryRunner: QueryRunner | null = null;
     private _apartmentRepository: IApartmentRepository | null = null;
     private _apartmentFeatureMappingRepository: IApartmentFeatureMappingRepository | null = null;
+    private _apartmentImageRepository: IApartmentImageRepository | null = null;
 
     constructor(dataSource: DataSource) {
         this.dataSource = dataSource;
@@ -30,6 +33,14 @@ export class UnitOfWork implements IUnitOfWork {
         }
         this._apartmentFeatureMappingRepository ??= new ApartmentFeatureMappingRepository(this.queryRunner);
         return this._apartmentFeatureMappingRepository;
+    }
+
+    public get apartmentImageRepository(): IApartmentImageRepository {
+        if (!this.queryRunner) {
+            throw new Error('Transaction is not started yet');
+        }
+        this._apartmentImageRepository ??= new ApartmentImageRepository(this.queryRunner);
+        return this._apartmentImageRepository;
     }
 
     async beginTransaction(): Promise<void> {
