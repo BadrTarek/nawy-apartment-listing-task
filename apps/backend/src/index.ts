@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express, { Express } from "express";
 import { createRouter } from "./presentation/routes";
 import { nawyApartmentDataSource } from "./config";
