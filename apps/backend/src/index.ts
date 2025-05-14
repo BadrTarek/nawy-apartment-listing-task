@@ -1,19 +1,32 @@
 import express, { Express } from "express";
-import router from "./presentation/routes";
-import dotenv from 'dotenv';
+import { createRouter } from "./presentation/routes";
+import { nawyApartmentDataSource } from "./config";
 
-dotenv.config();
 
-const app: Express = express();
-const port = 3000;
 
-// Middleware to parse JSON bodies
-app.use(express.json());
 
-// Mount routes
-app.use("/api", router);
+async function bootstrap() {
+    // Initialize TypeORM connection
+    await nawyApartmentDataSource.initialize();
+    console.log("Database connection initialized");
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    const app: Express = express();
+    const port = process.env.PORT ?? 3000;
+
+    // Middleware to parse JSON bodies
+    app.use(express.json());
+
+    // Mount routes
+    app.use("/api", createRouter(nawyApartmentDataSource));
+
+
+    // Start the server
+    app.listen(port, () => {
+        console.log(`Server is running on http://localhost:${port}`);
+    });
+}
+
+bootstrap().catch(error => {
+    console.error("Failed to start the application:", error);
+    process.exit(1);
 });
