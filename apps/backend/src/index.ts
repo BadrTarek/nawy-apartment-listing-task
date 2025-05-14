@@ -4,6 +4,7 @@ import path from "path";
 import { createRouter } from "./presentation/routes";
 import { nawyApartmentDataSource } from "./config";
 import { errorHandlerMiddleware } from './presentation/middlewares/error-handler.middleware';
+import { requestLoggerMiddleware } from './presentation/middlewares/request-logger.middleware';
 
 
 
@@ -18,6 +19,9 @@ async function bootstrap() {
 
     // Middleware to parse JSON bodies
     app.use(express.json());
+
+    // Request logger middleware
+    app.use(requestLoggerMiddleware);
 
     // Serve static files from uploads directory
     app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
