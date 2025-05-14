@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-export const NawyApartmentDataSource = new DataSource({
+export const nawyApartmentDataSource = new DataSource({
     type: "postgres",
     host: process.env.DB_HOST ?? "localhost",
     port: parseInt(process.env.DB_PORT ?? "5432"),
