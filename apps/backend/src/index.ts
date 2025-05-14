@@ -3,6 +3,7 @@ import express, { Express } from "express";
 import path from "path";
 import { createRouter } from "./presentation/routes";
 import { nawyApartmentDataSource } from "./config";
+import { errorHandlerMiddleware } from './presentation/middlewares/error-handler.middleware';
 
 
 
@@ -23,6 +24,9 @@ async function bootstrap() {
 
     // Mount routes
     app.use("/api", createRouter(nawyApartmentDataSource));
+
+    // Error-handling middleware (must be after all routes)
+    app.use(errorHandlerMiddleware);
 
 
     // Start the server
