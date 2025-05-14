@@ -11,9 +11,6 @@ export class ApartmentFeature {
     @Column()
     name: string;
 
-    @Column("text")
-    description: string;
-
     @Column({ name: 'is_active', default: true })
     isActive: boolean;
 

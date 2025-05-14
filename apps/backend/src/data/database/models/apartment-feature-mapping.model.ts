@@ -16,6 +16,9 @@ export class ApartmentFeatureMapping {
     @Column({ name: 'feature_id' })
     featureId: number;
 
+    @Column({ name: 'feature_value' })
+    featureValue: string;
+
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 
