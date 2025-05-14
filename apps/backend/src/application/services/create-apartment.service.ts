@@ -2,6 +2,7 @@ import { Apartment as ApartmentEntity } from "../../domain/entities/apartment.en
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { CreateApartmentDto } from "../dtos/create-apartment.dto";
 import { ApartmentFeatureMapping } from '../../domain/entities/apartment-feature-mapping.entity';
+import { ApartmentImage as ApartmentImageEntity } from "../../domain/entities/apartment-image.entity";
 
 
 
@@ -21,6 +22,13 @@ export class CreateApartmentService {
             };
         });
         await this.unitOfWork.apartmentFeatureMappingRepository.bulkCreate(apartmentFeatureMappings as ApartmentFeatureMapping[]);
+        await this.unitOfWork.apartmentImageRepository.bulkCreate(
+            createApartmentDto.apartmentImages.map(image => ({
+                apartmentId: apartment.id,
+                url: image,
+                isActive: true
+            })) as ApartmentImageEntity[]
+        );
         return apartment;
     }
 }

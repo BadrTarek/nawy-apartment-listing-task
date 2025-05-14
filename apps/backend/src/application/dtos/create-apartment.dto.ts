@@ -41,4 +41,8 @@ export class CreateApartmentDto {
     @ValidateNested({ each: true })
     @Type(() => FeatureDto)
     features: FeatureDto[];
+
+    @IsArray()
+    @IsString({ each: true })
+    apartmentImages: string[];
 }
