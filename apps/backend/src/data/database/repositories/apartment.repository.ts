@@ -2,6 +2,7 @@ import { IApartmentRepository } from "../../../domain/interfaces/repositories/ap
 import { Apartment as ApartmentEntity } from "../../../domain/entities/apartment.entity";
 import { Apartment as ApartmentOrmModel } from '../models/apartment.model';
 import { QueryRunner } from 'typeorm';
+import { ApartmentFilter } from "../../../domain/interfaces/filters/apartment-filter.interface";
 
 export class ApartmentRepository implements IApartmentRepository {
     private readonly queryRunner: QueryRunner;
@@ -14,9 +15,71 @@ export class ApartmentRepository implements IApartmentRepository {
         return this.queryRunner.manager.getRepository(ApartmentOrmModel);
     }
 
-    public async list(): Promise<ApartmentEntity[]> {
-        const apartments = await this.getRepository().find();
-        return apartments.map(apartment => ({
+    public async filter(filter: ApartmentFilter): Promise<{ data: ApartmentEntity[], total: number }> {
+        const {
+            minPrice,
+            maxPrice,
+            areaId,
+            cityId,
+            countryId,
+            searchTerm,
+            isAvailable,
+            skip,
+            take
+        } = filter;
+
+        const queryBuilder = this.getRepository()
+            .createQueryBuilder('apartment')
+            .leftJoinAndSelect('apartment.area', 'area')
+            .leftJoinAndSelect('area.city', 'city')
+            .leftJoinAndSelect('city.country', 'country')
+            .leftJoinAndSelect('apartment.images', 'images')
+            .leftJoinAndSelect('apartment.featureMappings', 'featureMappings')
+            .leftJoinAndSelect('featureMappings.feature', 'feature');
+
+        // Apply filters
+        if (minPrice !== undefined) {
+            queryBuilder.andWhere('apartment.price >= :minPrice', { minPrice });
+        }
+
+        if (maxPrice !== undefined) {
+            queryBuilder.andWhere('apartment.price <= :maxPrice', { maxPrice });
+        }
+
+        if (areaId !== undefined) {
+            queryBuilder.andWhere('apartment.areaId = :areaId', { areaId });
+        }
+
+        if (cityId !== undefined) {
+            queryBuilder.andWhere('area.cityId = :cityId', { cityId });
+        }
+
+        if (countryId !== undefined) {
+            queryBuilder.andWhere('city.countryId = :countryId', { countryId });
+        }
+
+        if (searchTerm !== undefined) {
+            queryBuilder.andWhere(
+                '(apartment.title ILIKE :searchTerm OR apartment.description ILIKE :searchTerm)',
+                { searchTerm: `%${searchTerm}%` }
+            );
+        }
+
+        if (isAvailable !== undefined) {
+            queryBuilder.andWhere('apartment.isAvailable = :isAvailable', { isAvailable });
+        }
+
+        // Get total count for pagination
+        const total = await queryBuilder.getCount();
+
+        // Apply pagination
+        queryBuilder.skip(skip).take(take);
+
+        // Execute query
+        const apartments = await queryBuilder.getMany();
+
+        // Map to entity
+        const apartmentEntities = apartments.map(apartment => ({
             id: apartment.id,
             title: apartment.title,
             description: apartment.description,
@@ -27,6 +90,11 @@ export class ApartmentRepository implements IApartmentRepository {
             createdAt: apartment.createdAt,
             updatedAt: apartment.updatedAt
         }));
+
+        return {
+            data: apartmentEntities,
+            total
+        };
     }
 
     public async getById(id: number): Promise<ApartmentEntity | null> {
