@@ -88,7 +88,7 @@ export class UnitOfWork implements IUnitOfWork {
 
     async commit(): Promise<void> {
         if (!this.queryRunner) {
-            throw new Error('No active transaction to commit');
+            return;
         }
 
         try {
@@ -100,7 +100,7 @@ export class UnitOfWork implements IUnitOfWork {
 
     async rollback(): Promise<void> {
         if (!this.queryRunner) {
-            throw new Error('No active transaction to rollback');
+            return;
         }
 
         try {
