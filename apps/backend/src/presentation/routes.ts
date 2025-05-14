@@ -43,6 +43,10 @@ export function createRouter(dataSource: DataSource): Router {
         upload.array('images', 10), // Max 10 images
         apartmentsController.create.bind(apartmentsController)
     );
+    router.get(
+        "/apartments",
+        apartmentsController.filter.bind(apartmentsController)
+    );
 
     // Countries routes
     router.get("/countries/search", countriesController.search.bind(countriesController));

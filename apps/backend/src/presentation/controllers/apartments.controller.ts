@@ -1,21 +1,24 @@
 import { Request, Response } from "express";
 import { CreateApartmentService } from "../../application/services/create-apartment.service";
 import { CreateApartmentDto } from "../../application/dtos/create-apartment.dto";
+import { FilterApartmentsDto } from "../../application/dtos/filter-apartments.dto";
 import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { MediaService } from "../../application/services/media.service";
 import { IMediaRepository } from "../../domain/interfaces/repositories/media-repository.interface";
+import { FilterApartmentsService } from "../../application/services/filter-apartments.service";
 
 export class ApartmentsController {
     createApartmentService: CreateApartmentService;
+    filterApartmentsService: FilterApartmentsService;
     mediaService: MediaService;
 
     constructor(
         private readonly unitOfWork: IUnitOfWork,
         private readonly mediaRepository: IMediaRepository,
     ) {
-
+        this.filterApartmentsService = new FilterApartmentsService(unitOfWork);
     }
 
     async create(req: Request, res: Response): Promise<void> {
@@ -68,6 +71,58 @@ export class ApartmentsController {
             console.log(error)
             res.status(500).json({
                 message: 'Error creating apartment',
+                error: error instanceof Error ? error.message : 'Unknown error'
+            });
+        } finally {
+            // Ensure transaction is committed or rolled back
+            try {
+                await this.unitOfWork.commit();
+            } catch (error) {
+                await this.unitOfWork.rollback();
+                console.error("Transaction rollback due to error:", error);
+            }
+        }
+    }
+
+    async filter(req: Request, res: Response): Promise<void> {
+        try {
+            // Transform query parameters to DTO
+            const filterDto = plainToClass(FilterApartmentsDto, {
+                ...req.query,
+                page: parseInt(req.query.page as string) || 1,
+                limit: parseInt(req.query.limit as string) || 10
+            });
+
+            // Validate the DTO
+            const errors = await validate(filterDto);
+            if (errors.length > 0) {
+                res.status(400).json({
+                    message: 'Validation failed',
+                    errors: errors.map(error => ({
+                        property: error.property,
+                        constraints: error.constraints
+                    }))
+                });
+                return;
+            }
+
+            await this.unitOfWork.beginTransaction();
+            const result = await this.filterApartmentsService.execute(filterDto);
+
+            // Return success response with pagination metadata
+            res.json({
+                data: result.data,
+                meta: {
+                    total: result.total,
+                    currentPage: filterDto.page,
+                    itemsPerPage: filterDto.limit,
+                    totalPages: Math.ceil(result.total / filterDto.limit)
+                }
+            });
+        } catch (error) {
+            console.error('Error filtering apartments:', error);
+            res.status(500).json({
+                message: 'Error filtering apartments',
                 error: error instanceof Error ? error.message : 'Unknown error'
             });
         } finally {
