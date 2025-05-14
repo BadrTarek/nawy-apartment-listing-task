@@ -1,6 +1,19 @@
-import { IsString, Length, IsNumber, IsBoolean } from 'class-validator';
+import { IsString, Length, IsNumber, IsBoolean, IsArray, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
+// Helper DTO for feature validation
+class FeatureDto {
+    @IsNumber()
+    featureId: number;
 
+    @IsString()
+    @Length(1, 200)
+    value: string;
+}
+
+/**
+ * DTO for creating an apartment
+ */
 export class CreateApartmentDto {
 
     @IsString()
@@ -23,4 +36,9 @@ export class CreateApartmentDto {
 
     @IsBoolean()
     isAvailable: boolean;
+
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => FeatureDto)
+    features: FeatureDto[];
 }
