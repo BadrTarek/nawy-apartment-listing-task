@@ -8,7 +8,7 @@ class FeatureDto {
 
     @IsString()
     @Length(1, 200)
-    value: string;
+    featureValue: string;
 }
 
 /**
