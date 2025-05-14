@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import express, { Express } from "express";
+import path from "path";
 import { createRouter } from "./presentation/routes";
 import { nawyApartmentDataSource } from "./config";
 
@@ -16,6 +17,9 @@ async function bootstrap() {
 
     // Middleware to parse JSON bodies
     app.use(express.json());
+
+    // Serve static files from uploads directory
+    app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
     // Mount routes
     app.use("/api", createRouter(nawyApartmentDataSource));
