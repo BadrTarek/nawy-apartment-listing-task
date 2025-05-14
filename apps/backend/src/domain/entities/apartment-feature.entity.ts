@@ -3,10 +3,10 @@
 
 
 export interface ApartmentFeature {
-    id: number;
+    id?: number;
     name: string;
     description: string;
     isActive: boolean;
-    createdAt: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }

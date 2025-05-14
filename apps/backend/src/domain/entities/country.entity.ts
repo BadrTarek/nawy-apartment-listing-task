@@ -1,9 +1,9 @@
 
 export interface Country {
-    id: number;
+    id?: number;
     name: string;
     currency: string;
     isActive: boolean;
-    createdAt: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }

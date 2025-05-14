@@ -1,12 +1,12 @@
 
 export interface Apartment {
-    id: number;
+    id?: number;
     title: string;
     description: string;
     price: number;
     areaId: number;
     address: string;
     isAvailable: boolean;
-    createdAt: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }

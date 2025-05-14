@@ -3,8 +3,8 @@
 
 
 export interface ApartmentFeatureMapping {
-    id: number;
+    id?: number;
     apartmentId: number;
     featureId: number;
-    createdAt: Date;
+    createdAt?: Date;
 }

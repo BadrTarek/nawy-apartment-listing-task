@@ -3,10 +3,10 @@
 
 
 export interface ApartmentImage {
-    id: number;
+    id?: number;
     url: string;
     apartmentId: number;
     isActive: boolean;
-    createdAt: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }

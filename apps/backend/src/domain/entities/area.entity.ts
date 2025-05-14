@@ -1,9 +1,9 @@
 
 export interface Area {
-    id: number;
+    id?: number;
     name: string;
     cityId: number;
     isActive: boolean;
-    createdAt: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 }
