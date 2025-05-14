@@ -17,11 +17,16 @@
     "migration:revert": "yarn typeorm migration:revert -d src/config/index.ts"
   },
   "dependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/multer": "^1.4.12",
     "@types/node": "^22.15.17",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "fs-extra": "^11.3.0",
+    "multer": "^1.4.5-lts.2",
+    "path-to-regexp": "^8.2.0",
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
     "ts-node-dev": "^2.0.0",
