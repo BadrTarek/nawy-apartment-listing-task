@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { CreateApartmentService } from "../../application/services/create-apartment.service";
 import { CreateApartmentDto } from "../../application/dtos/create-apartment.dto";
 import { FilterApartmentsDto } from "../../application/dtos/filter-apartments.dto";
@@ -8,6 +8,7 @@ import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { MediaService } from "../../application/services/media.service";
 import { IMediaRepository } from "../../domain/interfaces/repositories/media-repository.interface";
 import { FilterApartmentsService } from "../../application/services/filter-apartments.service";
+import { ValidationError } from "../../domain/errors/validation.error";
 
 export class ApartmentsController {
     createApartmentService: CreateApartmentService;
@@ -21,13 +22,12 @@ export class ApartmentsController {
         this.filterApartmentsService = new FilterApartmentsService(unitOfWork);
     }
 
-    async create(req: Request, res: Response): Promise<void> {
+    async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             this.mediaService = new MediaService(this.mediaRepository);
 
             if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
-                res.status(400).json({ message: 'No files uploaded' });
-                return;
+                throw new ValidationError('No files uploaded' as any);
             }
 
             const urls = await this.mediaService.uploadMultipleImages(req.files);
@@ -49,17 +49,10 @@ export class ApartmentsController {
             // Validate the DTO
             const errors = await validate(createApartmentDto);
             if (errors.length > 0) {
-                res.status(400).json({
-                    message: 'Validation failed',
-                    errors: errors.map(error => ({
-                        property: error.property,
-                        constraints: error.constraints
-                    }))
-                });
-                return;
+                throw new ValidationError(errors);
             }
-            await this.unitOfWork.beginTransaction();
 
+            await this.unitOfWork.beginTransaction();
             this.createApartmentService = new CreateApartmentService(this.unitOfWork);
 
             // Create apartment using service
@@ -68,23 +61,12 @@ export class ApartmentsController {
             // Return success response
             res.status(201).json(apartment);
         } catch (error) {
-            console.log(error)
-            res.status(500).json({
-                message: 'Error creating apartment',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
-        } finally {
-            // Ensure transaction is committed or rolled back
-            try {
-                await this.unitOfWork.commit();
-            } catch (error) {
-                await this.unitOfWork.rollback();
-                console.error("Transaction rollback due to error:", error);
-            }
+            await this.unitOfWork.rollback();
+            next(error);
         }
     }
 
-    async filter(req: Request, res: Response): Promise<void> {
+    async filter(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             // Transform query parameters to DTO
             const filterDto = plainToClass(FilterApartmentsDto, {
@@ -96,14 +78,7 @@ export class ApartmentsController {
             // Validate the DTO
             const errors = await validate(filterDto);
             if (errors.length > 0) {
-                res.status(400).json({
-                    message: 'Validation failed',
-                    errors: errors.map(error => ({
-                        property: error.property,
-                        constraints: error.constraints
-                    }))
-                });
-                return;
+                throw new ValidationError(errors);
             }
 
             await this.unitOfWork.beginTransaction();
@@ -119,20 +94,11 @@ export class ApartmentsController {
                     totalPages: Math.ceil(result.total / filterDto.limit)
                 }
             });
+
+            await this.unitOfWork.commit();
         } catch (error) {
-            console.error('Error filtering apartments:', error);
-            res.status(500).json({
-                message: 'Error filtering apartments',
-                error: error instanceof Error ? error.message : 'Unknown error'
-            });
-        } finally {
-            // Ensure transaction is committed or rolled back
-            try {
-                await this.unitOfWork.commit();
-            } catch (error) {
-                await this.unitOfWork.rollback();
-                console.error("Transaction rollback due to error:", error);
-            }
+            await this.unitOfWork.rollback();
+            next(error);
         }
     }
 }
