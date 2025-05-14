@@ -7,6 +7,7 @@ export interface IUnitOfWork {
     apartmentRepository: IApartmentRepository;
     
     // Methods
+    beginTransaction(): Promise<void> 
     commit(): Promise<void>;
     rollback(): Promise<void>;
 }
