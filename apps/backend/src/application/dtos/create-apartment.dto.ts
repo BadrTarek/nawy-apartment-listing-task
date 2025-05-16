@@ -24,18 +24,23 @@ export class CreateApartmentDto {
     @Length(10, 500)
     description: string;
 
+    @Type(() => Number)
     @IsNumber()
     price: number;
 
+    @Type(() => Number)
     @IsNumber()
     bathrooms: number;
 
+    @Type(() => Number)
     @IsNumber()
     bedrooms: number;
 
+    @Type(() => Number)
     @IsNumber()
     size: number;
 
+    @Type(() => Number)
     @IsNumber()
     areaId: number;
 
@@ -43,12 +48,15 @@ export class CreateApartmentDto {
     @Length(10, 200)
     address: string;
 
+    @Type(() => Number)
     @IsNumber()
     longitude: number;
 
+    @Type(() => Number)
     @IsNumber()
     latitude: number;
 
+    @Type(() => Boolean)
     @IsBoolean()
     isAvailable: boolean;
 
