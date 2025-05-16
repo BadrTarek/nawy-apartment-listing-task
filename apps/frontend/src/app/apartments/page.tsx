@@ -23,9 +23,6 @@ const NAV_LINKS = [
 export default function ApartmentsClient() {
     // UI state
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [mapView, setMapView] = useState(false);
-    const [verifiedOnly, setVerifiedOnly] = useState(false);
-    const [showDropdown, setShowDropdown] = useState(false);
 
     // Apartments state
     const [apartments, setApartments] = useState<ApartmentResponse>({
@@ -54,7 +51,6 @@ export default function ApartmentsClient() {
                 console.error('Error fetching apartments:', error);
             }
         };
-
         fetchApartments();
     }, [filters, setApartments]);
 
@@ -159,16 +155,7 @@ export default function ApartmentsClient() {
                         Showing {((filters.page - 1) * filters.limit) + 1}-{Math.min(filters.page * filters.limit, apartments.meta.total)} of {apartments.meta.total} apartments
                     </div>
 
-                    <FilterControls
-                        mapView={mapView}
-                        setMapView={setMapView}
-                        verifiedOnly={verifiedOnly}
-                        setVerifiedOnly={setVerifiedOnly}
-                        showDropdown={showDropdown}
-                        setShowDropdown={setShowDropdown}
-                        onFilterChange={handleFilterChange}
-                        filters={filters}
-                    />
+                    <FilterControls />
                 </div>
 
                 {/* Property Grid */}
