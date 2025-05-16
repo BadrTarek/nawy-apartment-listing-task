@@ -4,7 +4,7 @@ interface PaginationProps {
     onPageChange: (page: number) => void;
 }
 
-export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+export default function Pagination({ currentPage, totalPages, onPageChange }: Readonly<PaginationProps>) {
     const getVisiblePages = () => {
         const pages: number[] = [];
         const maxVisible = 5;
@@ -56,8 +56,11 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
 
             {visiblePages.map((page, index) => {
                 if (page === -1) {
+                    // Use previous and next page numbers to generate a unique key for dots
+                    const prevPage = visiblePages[index - 1];
+                    const nextPage = visiblePages[index + 1];
                     return (
-                        <span key={`dots-${index}`} className="px-2 py-2 text-gray-400">
+                        <span key={`dots-${prevPage}-${nextPage}`} className="px-2 py-2 text-gray-400">
                             ...
                         </span>
                     );
@@ -68,8 +71,8 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
                         key={page}
                         onClick={() => onPageChange(page)}
                         className={`px-4 py-2 rounded-lg border font-medium transition-colors ${currentPage === page
-                                ? 'bg-blue-600 text-white border-blue-600 shadow-md'
-                                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                             }`}
                     >
                         {page}
