@@ -92,6 +92,15 @@ export class ApartmentRepository implements IApartmentRepository {
             longitude: apartment.longitude,
             latitude: apartment.latitude,
             isAvailable: apartment.isAvailable,
+            countryName: apartment.area?.city?.country?.name,
+            cityName: apartment.area?.city?.name,
+            areaName: apartment.area?.name,
+            currency: apartment.area?.city?.country?.currency,
+            images: apartment.images?.map(image => image.url),
+            features: apartment.featureMappings?.map(featureMapping => ({
+                "name": featureMapping.feature.name,
+                "value": featureMapping.featureValue
+            })),
             createdAt: apartment.createdAt,
             updatedAt: apartment.updatedAt
         }));
@@ -114,11 +123,20 @@ export class ApartmentRepository implements IApartmentRepository {
             bathrooms: apartment.bathrooms,
             bedrooms: apartment.bedrooms,
             size: apartment.size,
-            areaId: apartment.areaId,
             address: apartment.address,
+            areaId: apartment.areaId,
             longitude: apartment.longitude,
             latitude: apartment.latitude,
             isAvailable: apartment.isAvailable,
+            countryName: apartment.area?.city?.country?.name,
+            cityName: apartment.area?.city?.name,
+            areaName: apartment.area?.name,
+            currency: apartment.area?.city?.country?.currency,
+            images: apartment.images?.map(image => image.url),
+            features: apartment.featureMappings?.map(featureMapping => ({
+                "name": featureMapping.feature.name,
+                "value": featureMapping.featureValue
+            })),
             createdAt: apartment.createdAt,
             updatedAt: apartment.updatedAt
         };
@@ -129,8 +147,13 @@ export class ApartmentRepository implements IApartmentRepository {
             title: apartment.title,
             description: apartment.description,
             price: apartment.price,
-            areaId: apartment.areaId,
             address: apartment.address,
+            size: apartment.size,
+            bedrooms: apartment.bedrooms,
+            bathrooms: apartment.bathrooms,
+            areaId: apartment.areaId,
+            longitude: apartment.longitude,
+            latitude: apartment.latitude,
             isAvailable: apartment.isAvailable
         });
 
@@ -139,14 +162,23 @@ export class ApartmentRepository implements IApartmentRepository {
             title: newApartment.title,
             description: newApartment.description,
             price: newApartment.price,
-            bathrooms: apartment.bathrooms,
-            bedrooms: apartment.bedrooms,
-            size: apartment.size,
-            areaId: newApartment.areaId,
+            bathrooms: newApartment.bathrooms,
+            bedrooms: newApartment.bedrooms,
+            size: newApartment.size,
             address: newApartment.address,
-            longitude: apartment.longitude,
-            latitude: apartment.latitude,
+            areaId: newApartment.areaId,
+            longitude: newApartment.longitude,
+            latitude: newApartment.latitude,
             isAvailable: newApartment.isAvailable,
+            countryName: newApartment.area?.city?.country?.name,
+            cityName: newApartment.area?.city?.name,
+            areaName: newApartment.area?.name,
+            currency: newApartment.area?.city?.country?.currency,
+            images: newApartment.images?.map(image => image.url),
+            features: newApartment.featureMappings?.map(featureMapping => ({
+                "name": featureMapping.feature.name,
+                "value": featureMapping.featureValue
+            })),
             createdAt: newApartment.createdAt,
             updatedAt: newApartment.updatedAt
         };
