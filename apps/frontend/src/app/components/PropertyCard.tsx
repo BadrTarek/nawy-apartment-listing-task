@@ -1,5 +1,4 @@
-// components/PropertyCard.tsx
-import { Home } from 'lucide-react';
+import { Home, MapPinned } from 'lucide-react';
 import Image from 'next/image';
 import { Apartment } from '../models/domain/apartment.model';
 
@@ -29,25 +28,29 @@ export default function PropertyCard({ property }: Readonly<PropertyCardProps>) 
         <div className="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
           <div className="flex items-center">
             <Home className="w-4 h-4 mr-1" />
-            <span className="font-medium">{property.bedrooms}</span> Bedroom
+            <span className="font-medium mr-1">{property.bedrooms}</span> Bedroom
           </div>
           <div className="flex items-center">
-            <span className="font-medium">{property.bathrooms}</span> Bathroom
-          </div>
-          <div className="flex items-center">
-            <span className="font-medium">{property.size}</span> SQ
+            <span className="font-medium mr-1">{property.bathrooms}</span> Bathroom
           </div>
         </div>
 
         <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-4">
           <div className="text-2xl font-bold text-gray-900">
-            <span className="text-blue-600">${property.price}</span>
+            <span className="text-green-700">{property.price} {property.currency}</span>
           </div>
           <div className="flex flex-col xs:flex-row space-y-2 xs:space-y-0 xs:space-x-2 w-full xs:w-auto">
-            <button className="w-full xs:w-auto px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium">
-              Open Map
+            <button className="w-full xs:w-auto px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium cursor-pointer"
+              onClick={() => {
+                window.open(`https://www.google.com/maps/search/?api=1&query=${property.latitude},${property.longitude}`, '_blank');
+              }}
+            >
+              <span className="w-full flex justify-center items-center">
+                <MapPinned className="w-5 h-5 mr-2" />
+                Open on Google Maps
+              </span>
             </button>
-            <button className="w-full xs:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+            <button className="w-full xs:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium cursor-pointer">
               View Details
             </button>
           </div>
