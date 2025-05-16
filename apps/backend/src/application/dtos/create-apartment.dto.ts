@@ -28,6 +28,15 @@ export class CreateApartmentDto {
     price: number;
 
     @IsNumber()
+    bathrooms: number;
+
+    @IsNumber()
+    bedrooms: number;
+
+    @IsNumber()
+    size: number;
+
+    @IsNumber()
     areaId: number;
 
     @IsString()

@@ -4,6 +4,9 @@ export interface Apartment {
     title: string;
     description: string;
     price: number;
+    size: number;
+    bedrooms: number;
+    bathrooms: number;
     areaId: number;
     address: string;
     longitude: number;

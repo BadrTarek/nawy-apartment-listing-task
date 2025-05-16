@@ -21,6 +21,15 @@ export class Apartment {
     @Column("decimal", { precision: 10, scale: 2 })
     price: number;
 
+    @Column("decimal")
+    size: number;
+
+    @Column("int")
+    bedrooms: number;
+
+    @Column("int")
+    bathrooms: number;
+
     @Column({ name: 'area_id' })
     areaId: number;
 
