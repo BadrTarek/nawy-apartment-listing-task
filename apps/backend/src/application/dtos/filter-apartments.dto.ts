@@ -1,16 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsNumber, IsString, IsBoolean, IsEnum, ValidateNested } from 'class-validator';
-import { Sort } from '../../domain/interfaces/filters/sort.interface';
-
-export class SortDto implements Sort {
-    @IsString()
-    @IsEnum(['price', 'createdAt', 'size', 'bedrooms', 'bathrooms'])
-    field: string;
-
-    @IsString()
-    @IsEnum(['ASC', 'DESC'])
-    order: 'ASC' | 'DESC';
-}
+import { IsOptional, IsNumber, IsString, IsBoolean, IsEnum } from 'class-validator';
 
 export class FilterApartmentsDto {
     @Type(() => Number)
@@ -68,7 +57,12 @@ export class FilterApartmentsDto {
     limit: number = 10;
 
     @IsOptional()
-    @ValidateNested()
-    @Type(() => SortDto)
-    sort?: SortDto;
+    @IsString()
+    @IsEnum(['price', 'createdAt', 'size', 'bedrooms', 'bathrooms'])
+    sortBy?: string;
+
+    @IsOptional()
+    @IsString()
+    @IsEnum(['ASC', 'DESC'])
+    sortOrder?: 'ASC' | 'DESC';
 }

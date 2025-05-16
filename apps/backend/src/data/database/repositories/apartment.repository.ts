@@ -28,7 +28,8 @@ export class ApartmentRepository implements IApartmentRepository {
             bathrooms,
             skip,
             take,
-            sort
+            sortBy,
+            sortOrder
         } = filter;
 
         const queryBuilder = this.getRepository()
@@ -77,10 +78,9 @@ export class ApartmentRepository implements IApartmentRepository {
         if (isAvailable !== undefined) {
             queryBuilder.andWhere('apartment.isAvailable = :isAvailable', { isAvailable });
         }
-
         // Apply sorting
-        if (sort) {
-            queryBuilder.orderBy(`apartment.${sort.field}`, sort.order);
+        if (sortBy) {
+            queryBuilder.orderBy(`apartment.${sortBy}`, sortOrder ?? 'DESC');
         } else {
             // Default sorting by createdAt DESC
             queryBuilder.orderBy('apartment.createdAt', 'DESC');
