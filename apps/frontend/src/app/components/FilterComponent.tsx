@@ -210,7 +210,7 @@ export default function FilterComponent({ onFilterChange, filters }: Readonly<Fi
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 flex justify-end">
         <button
           onClick={() => onFilterChange({ page: 1 })}
           className="w-full md:w-auto px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
