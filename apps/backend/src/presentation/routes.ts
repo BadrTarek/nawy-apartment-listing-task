@@ -28,14 +28,12 @@ export function createRouter(dataSource: DataSource): Router {
     const router = Router();
 
     // Initialize dependencies
-    const unitOfWork = new UnitOfWork(dataSource);
-    const mediaRepository = new LocalMediaRepository();
 
     // Initialize controllers
-    const apartmentsController = new ApartmentsController(unitOfWork, mediaRepository);
-    const countriesController = new CountriesController(unitOfWork);
-    const citiesController = new CitiesController(unitOfWork);
-    const areasController = new AreasController(unitOfWork);
+    const apartmentsController = new ApartmentsController(dataSource);
+    const countriesController = new CountriesController(dataSource);
+    const citiesController = new CitiesController(dataSource);
+    const areasController = new AreasController(dataSource);
 
     // Apartments routes
     router.post(

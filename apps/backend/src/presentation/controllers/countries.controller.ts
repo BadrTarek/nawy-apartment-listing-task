@@ -1,12 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { CountryService } from "../../application/services/country.service";
+import { UnitOfWork } from "../../data/database/unit-of-work";
+import { DataSource } from "typeorm";
 
 export class CountriesController {
     private readonly countryService: CountryService;
+    private readonly unitOfWork: IUnitOfWork;
 
-    constructor(private readonly unitOfWork: IUnitOfWork) {
-        this.countryService = new CountryService(unitOfWork);
+    constructor(
+        dataSource: DataSource
+    ) {
+        this.unitOfWork = new UnitOfWork(dataSource);
+        this.countryService = new CountryService(this.unitOfWork);
     }
 
     async search(req: Request, res: Response, next: NextFunction): Promise<void> {

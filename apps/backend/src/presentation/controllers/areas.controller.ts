@@ -2,12 +2,18 @@ import { NextFunction, Request, Response } from "express";
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { AreaService } from "../../application/services/area.service";
 import { ValidationError } from "../../domain/errors/validation.error";
+import { UnitOfWork } from "../../data/database/unit-of-work";
+import { DataSource } from "typeorm";
 
 export class AreasController {
     private readonly areaService: AreaService;
+    private readonly unitOfWork: IUnitOfWork;
 
-    constructor(private readonly unitOfWork: IUnitOfWork) {
-        this.areaService = new AreaService(unitOfWork);
+    constructor(
+        dataSource: DataSource
+    ) {
+        this.unitOfWork = new UnitOfWork(dataSource);
+        this.areaService = new AreaService(this.unitOfWork);
     }
 
     async search(req: Request, res: Response, next: NextFunction): Promise<void> {

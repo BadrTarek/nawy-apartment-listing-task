@@ -1,12 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { CityService } from "../../application/services/city.service";
+import { DataSource } from "typeorm";
+import { UnitOfWork } from "../../data/database/unit-of-work";
 
 export class CitiesController {
     private readonly cityService: CityService;
+    private readonly unitOfWork: IUnitOfWork;
 
-    constructor(private readonly unitOfWork: IUnitOfWork) {
-        this.cityService = new CityService(unitOfWork);
+    constructor(
+        dataSource: DataSource
+    ) {
+        this.unitOfWork = new UnitOfWork(dataSource);
+        this.cityService = new CityService(this.unitOfWork);
     }
 
     async search(req: Request, res: Response, next: NextFunction): Promise<void> {
