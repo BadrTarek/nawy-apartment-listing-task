@@ -1,13 +1,13 @@
 // components/PropertyCard.tsx
-import { Star, Home } from 'lucide-react';
+import { Home } from 'lucide-react';
 import Image from 'next/image';
 import { Apartment } from '../models/domain/apartment.model';
 
 interface PropertyCardProps {
-  property: Apartment;
+  readonly property: Apartment;
 }
 
-export default function PropertyCard({ property }: PropertyCardProps) {
+export default function PropertyCard({ property }: Readonly<PropertyCardProps>) {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
       <div className="relative">
