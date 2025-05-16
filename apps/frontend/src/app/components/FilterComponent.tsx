@@ -21,13 +21,13 @@ export default function FilterComponent({ onFilterChange, filters }: Readonly<Fi
 
   // Local form state
   const [formValues, setFormValues] = useState<Partial<ApartmentFilters>>({
-    countryId: filters.countryId,
-    cityId: filters.cityId,
-    areaId: filters.areaId,
-    minPrice: filters.minPrice,
-    maxPrice: filters.maxPrice,
-    bedrooms: filters.bedrooms,
-    bathrooms: filters.bathrooms
+    countryId: filters.countryId ?? undefined,
+    cityId: filters.cityId ?? undefined,
+    areaId: filters.areaId ?? undefined,
+    minPrice: filters.minPrice ?? undefined,
+    maxPrice: filters.maxPrice ?? undefined,
+    bedrooms: filters.bedrooms ?? undefined,
+    bathrooms: filters.bathrooms ?? undefined
   });
 
   // Fetch countries on component mount
@@ -142,7 +142,11 @@ export default function FilterComponent({ onFilterChange, filters }: Readonly<Fi
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6 mb-8 border border-gray-100">
+    <form
+      key={`filter-form-${filters.countryId ?? ''}-${filters.cityId ?? ''}-${filters.areaId ?? ''}`}
+      onSubmit={handleSubmit}
+      className="bg-white rounded-lg shadow-lg p-6 mb-8 border border-gray-100"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="space-y-2">
           {/* Country select */}
@@ -278,7 +282,7 @@ export default function FilterComponent({ onFilterChange, filters }: Readonly<Fi
       <div className="mt-6 flex justify-end">
         <button
           type="submit"
-          className="w-full md:w-auto px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
+          className="w-full md:w-auto px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
         >
           <Filter className="w-5 h-5" />
           <span>Apply Filters</span>
