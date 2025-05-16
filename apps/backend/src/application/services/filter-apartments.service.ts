@@ -16,6 +16,9 @@ export class FilterApartmentsService {
             searchTerm: dto.searchTerm,
             isAvailable: dto.isAvailable,
             skip: (dto.page - 1) * dto.limit,
+            bedrooms: dto.bedrooms,
+            bathrooms: dto.bathrooms,
+            address: dto.address,
             take: dto.limit
         };
     }

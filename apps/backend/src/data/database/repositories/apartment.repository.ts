@@ -24,6 +24,9 @@ export class ApartmentRepository implements IApartmentRepository {
             countryId,
             searchTerm,
             isAvailable,
+            bedrooms,
+            bathrooms,
+            address,
             skip,
             take
         } = filter;
@@ -60,9 +63,15 @@ export class ApartmentRepository implements IApartmentRepository {
 
         if (searchTerm !== undefined) {
             queryBuilder.andWhere(
-                '(apartment.title ILIKE :searchTerm OR apartment.description ILIKE :searchTerm)',
+                '(apartment.title ILIKE :searchTerm OR apartment.description ILIKE :searchTerm OR apartment.address ILIKE :searchTerm)',
                 { searchTerm: `%${searchTerm}%` }
             );
+        }
+        if (bedrooms !== undefined) {
+            queryBuilder.andWhere('apartment.bedrooms = :bedrooms', { bedrooms });
+        }
+        if (bathrooms !== undefined) {
+            queryBuilder.andWhere('apartment.bathrooms = :bathrooms', { bathrooms });
         }
 
         if (isAvailable !== undefined) {

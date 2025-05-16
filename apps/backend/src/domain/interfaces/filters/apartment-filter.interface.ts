@@ -6,6 +6,9 @@ export interface ApartmentFilter {
     countryId?: number;
     searchTerm?: string;
     isAvailable?: boolean;
+    bedrooms?: number;
+    bathrooms?: number;
+    address?: string;
     skip: number;
     take: number;
 }

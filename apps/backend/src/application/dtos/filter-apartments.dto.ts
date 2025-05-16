@@ -31,6 +31,20 @@ export class FilterApartmentsDto {
     @IsString()
     searchTerm?: string;
 
+    @Type(() => Number)
+    @IsOptional()
+    @IsNumber()
+    bedrooms?: number;
+
+    @Type(() => Number)
+    @IsOptional()
+    @IsNumber()
+    bathrooms?: number;
+
+    @IsString()
+    @IsOptional()
+    address?: string;
+
     @Type(() => Boolean)
     @IsOptional()
     @IsBoolean()
