@@ -91,20 +91,20 @@ export default function ApartmentModal({ apartment, onClose }: Readonly<Apartmen
                     {/* Property details */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         <div className="p-4 bg-gray-50 rounded-lg">
-                            <p className="text-sm text-gray-500">Size</p>
-                            <p className="text-lg font-semibold">{apartment.size} sqm</p>
+                            <p className="text-sm text-gray-700">Size</p>
+                            <p className="text-lg font-semibold text-gray-400">{apartment.size} sqm</p>
                         </div>
                         <div className="p-4 bg-gray-50 rounded-lg">
-                            <p className="text-sm text-gray-500">Bedrooms</p>
-                            <p className="text-lg font-semibold">{apartment.bedrooms}</p>
+                            <p className="text-sm text-gray-700">Bedrooms</p>
+                            <p className="text-lg font-semibold text-gray-400">{apartment.bedrooms}</p>
                         </div>
                         <div className="p-4 bg-gray-50 rounded-lg">
-                            <p className="text-sm text-gray-500">Bathrooms</p>
-                            <p className="text-lg font-semibold">{apartment.bathrooms}</p>
+                            <p className="text-sm text-gray-700">Bathrooms</p>
+                            <p className="text-lg font-semibold text-gray-400">{apartment.bathrooms}</p>
                         </div>
                         <div className="p-4 bg-gray-50 rounded-lg">
-                            <p className="text-sm text-gray-500">Price per sqm</p>
-                            <p className="text-lg font-semibold">
+                            <p className="text-sm text-gray-700">Price per sqm</p>
+                            <p className="text-lg font-semibold text-gray-400">
                                 {(apartment.price / apartment.size).toFixed(2)} {apartment.currency}
                             </p>
                         </div>
@@ -112,14 +112,14 @@ export default function ApartmentModal({ apartment, onClose }: Readonly<Apartmen
 
                     {/* Description */}
                     <div className="mb-8">
-                        <h3 className="text-xl font-semibold mb-3">Description</h3>
+                        <h3 className="text-xl font-semibold mb-3 text-gray-700">Description</h3>
                         <p className="text-gray-600 whitespace-pre-line">{apartment.description}</p>
                     </div>
 
                     {/* Features */}
                     {apartment.features && apartment.features.length > 0 && (
                         <div>
-                            <h3 className="text-xl font-semibold mb-4">Features</h3>
+                            <h3 className="text-xl font-semibold mb-4 text-gray-700">Features</h3>
                             <div className="overflow-x-auto">
                                 <table className="w-full border-collapse">
                                     <thead>
