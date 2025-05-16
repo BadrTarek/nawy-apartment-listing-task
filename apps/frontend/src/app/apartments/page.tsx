@@ -10,6 +10,7 @@ import PropertyCard from '../components/PropertyCard';
 import Pagination from '../components/Pagination';
 import { ApartmentResponse } from '../models/dtos/apartment.dto';
 import { ApartmentFilters } from '../models/common/filter.model';
+import Spinner from '../components/Spinner';
 
 // Navigation links for better maintainability
 const NAV_LINKS = [
@@ -23,6 +24,7 @@ const NAV_LINKS = [
 export default function ApartmentsClient() {
     // UI state
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Apartments state
     const [apartments, setApartments] = useState<ApartmentResponse>({
@@ -45,10 +47,13 @@ export default function ApartmentsClient() {
     useEffect(() => {
         const fetchApartments = async () => {
             try {
+                setIsLoading(true);
                 const data = await ApartmentsService.getApartments(filters);
                 setApartments(data);
             } catch (error) {
                 console.error('Error fetching apartments:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -163,11 +168,17 @@ export default function ApartmentsClient() {
                 </div>
 
                 {/* Property Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    {apartments.data.map((property) => (
-                        <PropertyCard key={property.id} property={property} />
-                    ))}
-                </div>
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-10">
+                        <Spinner />
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        {apartments.data.map((property) => (
+                            <PropertyCard key={property.id} property={property} />
+                        ))}
+                    </div>
+                )}
 
                 {/* Pagination */}
                 <Pagination
