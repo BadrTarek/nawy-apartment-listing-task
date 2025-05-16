@@ -27,7 +27,8 @@ export class ApartmentRepository implements IApartmentRepository {
             bedrooms,
             bathrooms,
             skip,
-            take
+            take,
+            sort
         } = filter;
 
         const queryBuilder = this.getRepository()
@@ -75,6 +76,14 @@ export class ApartmentRepository implements IApartmentRepository {
 
         if (isAvailable !== undefined) {
             queryBuilder.andWhere('apartment.isAvailable = :isAvailable', { isAvailable });
+        }
+
+        // Apply sorting
+        if (sort) {
+            queryBuilder.orderBy(`apartment.${sort.field}`, sort.order);
+        } else {
+            // Default sorting by createdAt DESC
+            queryBuilder.orderBy('apartment.createdAt', 'DESC');
         }
 
         // Get total count for pagination
