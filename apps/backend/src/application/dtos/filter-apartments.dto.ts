@@ -41,10 +41,6 @@ export class FilterApartmentsDto {
     @IsNumber()
     bathrooms?: number;
 
-    @IsString()
-    @IsOptional()
-    address?: string;
-
     @Type(() => Boolean)
     @IsOptional()
     @IsBoolean()

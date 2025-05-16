@@ -18,7 +18,6 @@ export class FilterApartmentsService {
             skip: (dto.page - 1) * dto.limit,
             bedrooms: dto.bedrooms,
             bathrooms: dto.bathrooms,
-            address: dto.address,
             take: dto.limit
         };
     }

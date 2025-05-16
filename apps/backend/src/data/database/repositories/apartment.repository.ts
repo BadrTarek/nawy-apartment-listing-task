@@ -26,7 +26,6 @@ export class ApartmentRepository implements IApartmentRepository {
             isAvailable,
             bedrooms,
             bathrooms,
-            address,
             skip,
             take
         } = filter;
