@@ -86,6 +86,8 @@ export class ApartmentRepository implements IApartmentRepository {
             price: apartment.price,
             areaId: apartment.areaId,
             address: apartment.address,
+            longitude: apartment.longitude,
+            latitude: apartment.latitude,
             isAvailable: apartment.isAvailable,
             createdAt: apartment.createdAt,
             updatedAt: apartment.updatedAt
@@ -108,6 +110,8 @@ export class ApartmentRepository implements IApartmentRepository {
             price: apartment.price,
             areaId: apartment.areaId,
             address: apartment.address,
+            longitude: apartment.longitude,
+            latitude: apartment.latitude,
             isAvailable: apartment.isAvailable,
             createdAt: apartment.createdAt,
             updatedAt: apartment.updatedAt
@@ -131,6 +135,8 @@ export class ApartmentRepository implements IApartmentRepository {
             price: newApartment.price,
             areaId: newApartment.areaId,
             address: newApartment.address,
+            longitude: apartment.longitude,
+            latitude: apartment.latitude,
             isAvailable: newApartment.isAvailable,
             createdAt: newApartment.createdAt,
             updatedAt: newApartment.updatedAt

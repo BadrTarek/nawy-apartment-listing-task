@@ -27,6 +27,12 @@ export class Apartment {
     @Column()
     address: string;
 
+    @Column("decimal", { name: 'longitude' })
+    longitude: number;
+
+    @Column("decimal", { name: 'longitude' })
+    latitude: number;
+
     @Column({ name: 'is_available', default: true })
     isAvailable: boolean;
 

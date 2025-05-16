@@ -6,6 +6,8 @@ export interface Apartment {
     price: number;
     areaId: number;
     address: string;
+    longitude: number;
+    latitude: number;
     isAvailable: boolean;
     createdAt?: Date;
     updatedAt?: Date;

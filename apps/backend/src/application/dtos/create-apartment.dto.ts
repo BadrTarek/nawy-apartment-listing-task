@@ -34,6 +34,12 @@ export class CreateApartmentDto {
     @Length(10, 200)
     address: string;
 
+    @IsNumber()
+    longitude: number;
+
+    @IsNumber()
+    latitude: number;
+
     @IsBoolean()
     isAvailable: boolean;
 
