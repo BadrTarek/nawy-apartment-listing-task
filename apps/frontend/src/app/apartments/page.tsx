@@ -51,7 +51,11 @@ export default function ApartmentsClient() {
                 console.error('Error fetching apartments:', error);
             }
         };
-        fetchApartments();
+
+        // Only fetch when page changes or when limit changes
+        if (filters.page || filters.limit) {
+            fetchApartments();
+        }
     }, [filters, setApartments]);
 
     // Handle filter changes
