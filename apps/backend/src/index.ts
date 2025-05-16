@@ -5,7 +5,7 @@ import { createRouter } from "./presentation/routes";
 import { nawyApartmentDataSource } from "./config";
 import { errorHandlerMiddleware } from './presentation/middlewares/error-handler.middleware';
 import { requestLoggerMiddleware } from './presentation/middlewares/request-logger.middleware';
-
+import cors from 'cors';
 
 
 
@@ -19,6 +19,7 @@ async function bootstrap() {
 
     // Middleware to parse JSON bodies
     app.use(express.json());
+    app.use(cors());
 
     // Request logger middleware
     app.use(requestLoggerMiddleware);
