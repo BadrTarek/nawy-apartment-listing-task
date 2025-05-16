@@ -1,3 +1,5 @@
+export type SortField = 'price' | 'createdAt' | 'size' | 'bedrooms' | 'bathrooms';
+export type SortOrder = 'ASC' | 'DESC';
 
 export interface ApartmentFilters {
     minPrice?: number;
@@ -11,6 +13,8 @@ export interface ApartmentFilters {
     bathrooms?: number;
     page: number;
     limit: number;
+    sortBy?: SortField;
+    sortOrder?: SortOrder;
 }
 export interface FilterMeta {
     total: number;
