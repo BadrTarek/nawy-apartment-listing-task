@@ -30,7 +30,7 @@ export class Apartment {
     @Column("decimal", { name: 'longitude' })
     longitude: number;
 
-    @Column("decimal", { name: 'longitude' })
+    @Column("decimal", { name: 'latitude' })
     latitude: number;
 
     @Column({ name: 'is_available', default: true })
