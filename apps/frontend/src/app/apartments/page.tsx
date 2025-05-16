@@ -5,7 +5,7 @@ import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import { ApartmentsService } from '../services/apartments.service';
 import SearchForm from '../components/SearchForm';
-import FilterControls from '../components/FilterControls';
+import SortComponent from '../components/SortComponent';
 import PropertyCard from '../components/PropertyCard';
 import Pagination from '../components/Pagination';
 import { ApartmentResponse } from '../models/dtos/apartment.dto';
@@ -155,7 +155,7 @@ export default function ApartmentsClient() {
                         Showing {((filters.page - 1) * filters.limit) + 1}-{Math.min(filters.page * filters.limit, apartments.meta.total)} of {apartments.meta.total} apartments
                     </div>
 
-                    <FilterControls />
+                    <SortComponent />
                 </div>
 
                 {/* Property Grid */}
