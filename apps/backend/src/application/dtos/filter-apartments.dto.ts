@@ -18,6 +18,7 @@ export class FilterApartmentsDto {
     areaId?: number;
 
     @Type(() => Number)
+    @IsOptional()
     @IsNumber()
     cityId?: number;
 
