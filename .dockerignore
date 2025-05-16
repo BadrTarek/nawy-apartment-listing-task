@@ -4,6 +4,8 @@
 node_modules
 .pnp
 .pnp.js
+yarn.lock
+**/yarn.lock
 
 # Local env files
 .env
@@ -14,6 +16,8 @@ node_modules
 
 # Testing
 coverage
+__tests__
+jest.config.js
 
 # Turbo
 .turbo
@@ -26,6 +30,21 @@ coverage
 out/
 build
 dist
+
+# Docker
+Dockerfile
+.dockerignore
+
+# VS Code
+.vscode/
+
+# Git
+.git
+.gitignore
+
+# Uploads (will be mounted as volume)
+apps/backend/uploads/*
+!apps/backend/uploads/.gitkeep
 
 
 # Debug

@@ -1,6 +1,47 @@
 version: "3.8"
 
 services:
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    ports:
+      - "3001:3000" # Map to 3001 to avoid conflict with frontend
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=nawydb
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+    volumes:
+      - ./apps/backend/uploads:/app/uploads # Mount uploads directory
+      - ./apps/backend:/app # Mount the backend code for migrations
+    networks:
+      - nawy-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: sh -c "yarn install && yarn migration:run && yarn start"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://backend:3000
+    networks:
+      - nawy-network
+    depends_on:
+      - backend
+
   redis:
     image: redis:7-alpine
     ports:
@@ -8,6 +49,36 @@ services:
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
+    networks:
+      - nawy-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=nawydb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nawy-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  nawy-network:
+    driver: bridge
 
 volumes:
   redis_data:
+  postgres_data:
