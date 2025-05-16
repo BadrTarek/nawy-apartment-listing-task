@@ -164,7 +164,11 @@ export default function ApartmentsClient() {
                         Showing {((filters.page - 1) * filters.limit) + 1}-{Math.min(filters.page * filters.limit, apartments.meta.total)} of {apartments.meta.total} apartments
                     </div>
 
-                    <SortComponent />
+                    <SortComponent
+                        sortBy={filters.sortBy}
+                        sortOrder={filters.sortOrder}
+                        onSortChange={(sortBy, sortOrder) => handleFilterChange({ sortBy, sortOrder })}
+                    />
                 </div>
 
                 {/* Property Grid */}
