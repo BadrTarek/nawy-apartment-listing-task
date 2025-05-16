@@ -7,6 +7,8 @@ export interface ApartmentFilters {
     countryId?: number;
     searchTerm?: string;
     isAvailable?: boolean;
+    bedrooms?: number;
+    bathrooms?: number;
     page: number;
     limit: number;
 }

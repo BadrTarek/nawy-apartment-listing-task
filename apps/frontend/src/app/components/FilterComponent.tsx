@@ -1,4 +1,4 @@
-import { Search, MapPin, Calendar, DollarSign } from 'lucide-react';
+import { Filter, MapPin, Calendar, DollarSign } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { ApartmentFilters } from '../models/common/filter.model';
 import { LocationsService } from '../services/locations.service';
@@ -6,12 +6,12 @@ import { Country } from '../models/domain/country.model';
 import { City } from '../models/domain/city.model';
 import { Area } from '../models/domain/area.model';
 
-interface SearchFormProps {
+interface FilterFormProps {
   onFilterChange: (filters: Partial<ApartmentFilters>) => void;
   filters: ApartmentFilters;
 }
 
-export default function SearchForm({ onFilterChange, filters }: Readonly<SearchFormProps>) {
+export default function FilterComponent({ onFilterChange, filters }: Readonly<FilterFormProps>) {
   const [countries, setCountries] = useState<Country[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
@@ -212,11 +212,11 @@ export default function SearchForm({ onFilterChange, filters }: Readonly<SearchF
 
       <div className="mt-6">
         <button
-          onClick={() => onFilterChange({ page: 1 })} // Reset to first page when searching
+          onClick={() => onFilterChange({ page: 1 })}
           className="w-full md:w-auto px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
         >
-          <Search className="w-5 h-5" />
-          <span>Search Properties</span>
+          <Filter className="w-5 h-5" />
+          <span>filter</span>
         </button>
       </div>
     </div>

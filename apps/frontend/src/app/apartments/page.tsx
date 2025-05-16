@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import { ApartmentsService } from '../services/apartments.service';
-import SearchForm from '../components/SearchForm';
+import FilterComponent from '../components/FilterComponent';
 import SortComponent from '../components/SortComponent';
 import PropertyCard from '../components/PropertyCard';
 import Pagination from '../components/Pagination';
@@ -144,7 +144,7 @@ export default function ApartmentsClient() {
                 </div>
 
                 {/* Search Form */}
-                <SearchForm
+                <FilterComponent
                     filters={filters}
                     onFilterChange={handleFilterChange}
                 />
