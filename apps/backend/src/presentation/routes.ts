@@ -3,6 +3,7 @@ import { ApartmentsController } from "./controllers/apartments.controller";
 import { CountriesController } from "./controllers/countries.controller";
 import { CitiesController } from "./controllers/cities.controller";
 import { AreasController } from "./controllers/areas.controller";
+import { ApartmentFeaturesController } from "./controllers/apartment-features.controller";
 import multer from "multer";
 import { container } from "tsyringe";
 
@@ -105,6 +106,15 @@ export function createRouter(): Router {
             next();
         },
         getController(AreasController)
+    );
+
+    // Features routes
+    router.get("/apartment/features",
+        (req: any, res, next) => {
+            req.routeHandler = 'list';
+            next();
+        },
+        getController(ApartmentFeaturesController)
     );
 
     return router;

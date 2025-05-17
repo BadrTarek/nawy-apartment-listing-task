@@ -4,6 +4,7 @@ import { IApartmentImageRepository } from "../../domain/interfaces/repositories/
 import { ICountryRepository } from "../../domain/interfaces/repositories/country-repository.interface";
 import { ICityRepository } from "../../domain/interfaces/repositories/city-repository.interface";
 import { IAreaRepository } from "../../domain/interfaces/repositories/area-repository.interface";
+import { IApartmentFeatureRepository } from "../../domain/interfaces/repositories/feature-repository.interface";
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { DataSource, QueryRunner } from 'typeorm';
 import { ApartmentRepository } from "./repositories/apartment.repository";
@@ -12,6 +13,7 @@ import { ApartmentImageRepository } from "./repositories/apartment-image.reposit
 import { CountryRepository } from "./repositories/country.repository";
 import { CityRepository } from "./repositories/city.repository";
 import { AreaRepository } from "./repositories/area.repository";
+import { ApartmentFeatureRepository } from "./repositories/apartment-feature.repository";
 
 
 export class UnitOfWork implements IUnitOfWork {
@@ -23,6 +25,7 @@ export class UnitOfWork implements IUnitOfWork {
     private _countryRepository: ICountryRepository | null = null;
     private _cityRepository: ICityRepository | null = null;
     private _areaRepository: IAreaRepository | null = null;
+    private _apartmentFeatureRepository: IApartmentFeatureRepository | null = null;
 
     constructor(dataSource: DataSource) {
         this.dataSource = dataSource;
@@ -76,6 +79,14 @@ export class UnitOfWork implements IUnitOfWork {
         return this._areaRepository;
     }
 
+    public get apartmentFeatureRepository(): IApartmentFeatureRepository {
+        if (!this.queryRunner) {
+            throw new Error('Transaction is not started yet');
+        }
+        this._apartmentFeatureRepository ??= new ApartmentFeatureRepository(this.queryRunner);
+        return this._apartmentFeatureRepository;
+    }
+
     async beginTransaction(): Promise<void> {
         if (this.queryRunner) {
             throw new Error('Transaction already in progress');
@@ -121,6 +132,7 @@ export class UnitOfWork implements IUnitOfWork {
             this._countryRepository = null;
             this._cityRepository = null;
             this._areaRepository = null;
+            this._apartmentFeatureRepository = null;
         }
     }
 }

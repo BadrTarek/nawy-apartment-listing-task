@@ -4,6 +4,7 @@ import { IApartmentImageRepository } from "./repositories/apartment-image-reposi
 import { ICountryRepository } from "./repositories/country-repository.interface";
 import { ICityRepository } from "./repositories/city-repository.interface";
 import { IAreaRepository } from "./repositories/area-repository.interface";
+import { IApartmentFeatureRepository } from "./repositories/feature-repository.interface";
 
 export interface IUnitOfWork {
     // Repositories
@@ -13,6 +14,7 @@ export interface IUnitOfWork {
     countryRepository: ICountryRepository;
     cityRepository: ICityRepository;
     areaRepository: IAreaRepository;
+    apartmentFeatureRepository: IApartmentFeatureRepository;
 
     // Methods
     beginTransaction(): Promise<void>
