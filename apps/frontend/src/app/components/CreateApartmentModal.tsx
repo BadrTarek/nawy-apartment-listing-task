@@ -7,6 +7,7 @@ import { ApartmentFeature } from '../models/domain/apartment-feature.model';
 import { LocationsService } from '../services/locations.service';
 import { ApartmentsService } from '../services/apartments.service';
 import { ApartmentFeaturesService } from '../services/apartment-features.service';
+import ErrorPopup from './ErrorPopup';
 
 interface CreateApartmentModalProps {
     onClose: () => void;
@@ -73,6 +74,9 @@ export default function CreateApartmentModal({ onClose, onSuccess }: Readonly<Cr
         value: string;
     }>>([]);
 
+    // Error handling state
+    const [showErrorPopup, setShowErrorPopup] = useState(false);
+
     // Fetch countries on component mount
     useEffect(() => {
         async function fetchCountries() {
@@ -83,6 +87,7 @@ export default function CreateApartmentModal({ onClose, onSuccess }: Readonly<Cr
             } catch (error) {
                 console.error('Error fetching countries:', error);
                 setError('Failed to fetch countries');
+                setShowErrorPopup(true);
             } finally {
                 setIsLoadingCountries(false);
             }
@@ -104,6 +109,7 @@ export default function CreateApartmentModal({ onClose, onSuccess }: Readonly<Cr
             } catch (error) {
                 console.error('Error fetching cities:', error);
                 setError('Failed to fetch cities');
+                setShowErrorPopup(true);
             } finally {
                 setIsLoadingCities(false);
             }
@@ -125,6 +131,7 @@ export default function CreateApartmentModal({ onClose, onSuccess }: Readonly<Cr
             } catch (error) {
                 console.error('Error fetching areas:', error);
                 setError('Failed to fetch areas');
+                setShowErrorPopup(true);
             } finally {
                 setIsLoadingAreas(false);
             }
@@ -142,6 +149,7 @@ export default function CreateApartmentModal({ onClose, onSuccess }: Readonly<Cr
             } catch (error) {
                 console.error('Error fetching features:', error);
                 setError('Failed to fetch features');
+                setShowErrorPopup(true);
             } finally {
                 setIsLoadingFeatures(false);
             }
@@ -228,7 +236,8 @@ export default function CreateApartmentModal({ onClose, onSuccess }: Readonly<Cr
             onClose();
         } catch (err) {
             console.error('Error creating apartment:', err);
-            setError(err instanceof Error ? err.message : 'Failed to create apartment');
+            setError('Failed to create apartment');
+            setShowErrorPopup(true);
         } finally {
             setIsSubmitting(false);
         }
@@ -586,6 +595,15 @@ export default function CreateApartmentModal({ onClose, onSuccess }: Readonly<Cr
                         </div>
                     </form>
                 </div>
+
+                {/* Error Popup */}
+                {showErrorPopup && error && (
+                    <ErrorPopup
+                        message={error}
+                        onClose={() => setShowErrorPopup(false)}
+                        showRedirect={true}
+                    />
+                )}
             </div>
         </div>
     );

@@ -10,12 +10,15 @@ import { ApartmentResponse } from '../models/dtos/apartment.dto';
 import { ApartmentFilters } from '../models/common/filter.model';
 import Spinner from '../components/Spinner';
 import CreateApartmentModal from '../components/CreateApartmentModal';
+import ErrorPopup from '../components/ErrorPopup';
 import { PlusSquare } from 'lucide-react';
 
 export default function ApartmentsClient() {
     // UI state
     const [isLoading, setIsLoading] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [showErrorPopup, setShowErrorPopup] = useState(false);
 
     // Apartments state
     const [apartments, setApartments] = useState<ApartmentResponse>({
@@ -38,10 +41,13 @@ export default function ApartmentsClient() {
     const fetchApartments = useMemo(() => async () => {
         try {
             setIsLoading(true);
+            setError(null);
             const data = await ApartmentsService.getApartments(filters);
             setApartments(data);
         } catch (error) {
             console.error('Error fetching apartments:', error);
+            setError('Failed to get apartments');
+            setShowErrorPopup(true);
         } finally {
             setIsLoading(false);
         }
@@ -123,6 +129,15 @@ export default function ApartmentsClient() {
                         <span className="ml-2 mr-1">Add Apartment</span>
                     </button>
                 </div>
+
+                {/* Error Popup */}
+                {showErrorPopup && error && (
+                    <ErrorPopup
+                        message={error}
+                        onClose={() => setShowErrorPopup(false)}
+                        showRedirect={false}
+                    />
+                )}
 
                 {/* Create Apartment Modal */}
                 {showCreateModal && (
