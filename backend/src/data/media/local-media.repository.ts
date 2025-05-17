@@ -35,7 +35,7 @@ export class LocalMediaRepository implements IMediaRepository {
         const fileName = this.generateUniqueFileName(file.originalname);
         const filePath = path.join(this.uploadDir, fileName);
         await fs.writeFile(filePath, file.buffer);
-        return `${this.baseUrl}/${fileName}`;
+        return `${this.baseUrl.replace(/\/$/, '')}/${this.uploadDir.replace(/\/$/, '')}/${fileName}`;
     }
 
     async bulkUploadImage(files: Express.Multer.File[]): Promise<string[]> {

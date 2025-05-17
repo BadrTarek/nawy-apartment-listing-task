@@ -55,8 +55,10 @@ services:
         sleep 5 &&
         cd /app &&
         yarn migration:run &&
+        echo 'Running data seed...' &&
+        yarn seed:run &&
         echo 'Starting backend service...' &&
-        node ./dist/index.js
+        yarn run dev
       "
     restart: unless-stopped
 
