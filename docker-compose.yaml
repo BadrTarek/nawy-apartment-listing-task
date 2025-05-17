@@ -1,84 +1,70 @@
 version: "3.8"
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: apps/backend/Dockerfile
-    ports:
-      - "3001:3000" # Map to 3001 to avoid conflict with frontend
+  postgres:
+    image: postgres:15-alpine
     environment:
-      - NODE_ENV=production
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=nawydb
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
+      POSTGRES_USER: nawy
+      POSTGRES_PASSWORD: nawy123
+      POSTGRES_DB: nawy_apartments
+    ports:
+      - "5555:5432"
     volumes:
-      - ./apps/backend/uploads:/app/uploads # Mount uploads directory
-      - ./apps/backend:/app # Mount the backend code for migrations
-    networks:
-      - nawy-network
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    command: sh -c "yarn install && yarn migration:run && yarn start"
-
-  frontend:
-    build:
-      context: .
-      dockerfile: apps/frontend/Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://backend:3000
-    networks:
-      - nawy-network
-    depends_on:
-      - backend
+      - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7-alpine
+    command: redis-server --requirepass nawy123
     ports:
-      - "6379:6379"
+      - "6666:6379"
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes
-    networks:
-      - nawy-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
-  postgres:
-    image: postgres:15-alpine
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
-      - "5433:5432"
+      - "3300:3300"
     environment:
-      - POSTGRES_DB=nawydb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      # Database
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: nawy
+      DB_PASSWORD: nawy123
+      DB_NAME: nawy_apartments
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: nawy123
+      REDIS_KEY_PREFIX: nawy
+      # Server
+      SERVER_URL: http://localhost:3300
+      SERVER_UPLOADS_PATH: uploads
+      SERVER_PORT: 3300
+      # Environment
+      NODE_ENV: production
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - nawy-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - backend_uploads:/app/uploads
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
 
-networks:
-  nawy-network:
-    driver: bridge
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      API_BASE_URL: http://backend:3300
+      NODE_ENV: production
+    depends_on:
+      - backend
+    restart: unless-stopped
 
 volumes:
-  redis_data:
   postgres_data:
+  redis_data:
+  backend_uploads:

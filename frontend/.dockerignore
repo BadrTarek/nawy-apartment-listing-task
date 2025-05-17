@@ -42,9 +42,6 @@ Dockerfile
 .git
 .gitignore
 
-# Uploads (will be mounted as volume)
-apps/backend/uploads/*
-!apps/backend/uploads/.gitkeep
 
 
 # Debug

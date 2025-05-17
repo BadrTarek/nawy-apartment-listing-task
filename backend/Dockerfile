@@ -1,36 +1,44 @@
-FROM node:18-alpine AS builder
+# Build stage
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Copy root package.json only (yarn.lock will be generated)
-COPY package.json ./
+# Copy package files
+COPY package.json .
 
-# Copy the backend package.json
-COPY apps/backend/package.json ./apps/backend/
-COPY packages ./packages
+# Install dependencies and generate yarn.lock
+RUN yarn install
 
-# Install dependencies
-RUN yarn install --frozen-lockfile
+# Copy source code
+COPY . .
 
-# Copy backend source
-COPY apps/backend ./apps/backend
+# Create uploads directory
+RUN mkdir -p uploads
 
-# Build backend
-WORKDIR /app/apps/backend
+# Build the application
 RUN yarn build
 
-FROM node:18-alpine
+# Production stage
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy built assets from builder
-COPY --from=builder /app/apps/backend/dist ./dist
-COPY --from=builder /app/apps/backend/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
+# Copy package files
+COPY package.json .
 
-# Expose port
-EXPOSE 3000
+# Install production dependencies only
+RUN yarn install --production
+
+# Copy built assets from builder stage
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/uploads ./uploads
+
+# Create volume mount point
+VOLUME [ "/app/uploads" ]
+
+# Expose port 3300
+EXPOSE 3300
 
 # Start the application
-CMD ["node", "dist/index.js"]
+CMD ["yarn", "start"]
