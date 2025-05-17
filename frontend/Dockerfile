@@ -1,37 +1,40 @@
-FROM node:18-alpine AS builder
-
-# Set working directory
-WORKDIR /app
-
-# Copy root package.json only (yarn.lock will be generated)
-COPY package.json ./
-
-# Copy the frontend package.json and workspace packages
-COPY apps/frontend/package.json ./apps/frontend/
-COPY packages ./packages
-
-# Install dependencies
-RUN yarn install --frozen-lockfile
-
-# Copy frontend source
-COPY apps/frontend ./apps/frontend
-
-# Build frontend
-WORKDIR /app/apps/frontend
-RUN yarn build
-
-FROM node:18-alpine
+# Build stage
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy built assets from builder
-COPY --from=builder /app/apps/frontend/.next ./.next
-COPY --from=builder /app/apps/frontend/package.json ./
-COPY --from=builder /app/apps/frontend/public ./public
+# Copy package files
+COPY package.json .
+
+# Install dependencies and generate yarn.lock
+RUN yarn install
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the application
+RUN yarn build && yarn install --production
+
+# Production stage
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+# Copy necessary files from builder
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/package.json .
+COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 
-# Expose port
+
+# Set environment variables using key=value format
+ENV PORT=3000 \
+    NODE_ENV=production \
+    HOSTNAME="0.0.0.0"
+
+# Expose the port the app runs on
 EXPOSE 3000
 
 # Start the application
-CMD ["yarn", "start"]
+CMD ["node", "server.js"]
