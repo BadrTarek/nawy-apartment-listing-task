@@ -62,6 +62,8 @@ export class ApartmentsController {
 
             // Return success response
             res.status(201).json(apartment);
+
+            await this.unitOfWork.commit();
         } catch (error) {
             await this.unitOfWork.rollback();
             next(error);
