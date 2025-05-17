@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ApartmentsService } from '../services/apartments.service';
 import FilterComponent from '../components/FilterComponent';
 import SortComponent from '../components/SortComponent';
@@ -9,10 +9,13 @@ import Pagination from '../components/Pagination';
 import { ApartmentResponse } from '../models/dtos/apartment.dto';
 import { ApartmentFilters } from '../models/common/filter.model';
 import Spinner from '../components/Spinner';
+import CreateApartmentModal from '../components/CreateApartmentModal';
+import { PlusSquare } from 'lucide-react';
 
 export default function ApartmentsClient() {
     // UI state
     const [isLoading, setIsLoading] = useState(false);
+    const [showCreateModal, setShowCreateModal] = useState(false);
 
     // Apartments state
     const [apartments, setApartments] = useState<ApartmentResponse>({
@@ -31,25 +34,25 @@ export default function ApartmentsClient() {
         limit: 10
     });
 
-    // Fetch apartments when filters change
-    useEffect(() => {
-        const fetchApartments = async () => {
-            try {
-                setIsLoading(true);
-                const data = await ApartmentsService.getApartments(filters);
-                setApartments(data);
-            } catch (error) {
-                console.error('Error fetching apartments:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    // Define fetchApartments with useMemo
+    const fetchApartments = useMemo(() => async () => {
+        try {
+            setIsLoading(true);
+            const data = await ApartmentsService.getApartments(filters);
+            setApartments(data);
+        } catch (error) {
+            console.error('Error fetching apartments:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [filters, setIsLoading, setApartments]);
 
+    useEffect(() => {
         // Only fetch when page changes or when limit changes
         if (filters.page || filters.limit) {
-            fetchApartments();
+            void fetchApartments();
         }
-    }, [filters, setApartments]);
+    }, [filters, fetchApartments]);
 
     // Handle filter changes
     const handleFilterChange = (newFilters: Partial<ApartmentFilters>) => {
@@ -109,6 +112,28 @@ export default function ApartmentsClient() {
                     totalPages={apartments.meta.totalPages}
                     onPageChange={(page) => handleFilterChange({ page })}
                 />
+
+                {/* Add Apartment Button */}
+                <div className="fixed bottom-4 right-4">
+                    <button
+                        onClick={() => setShowCreateModal(true)}
+                        className="flex items-center justify-center bg-blue-600 text-white rounded-full p-3 shadow-md hover:bg-blue-700 transition-all duration-200 hover:scale-105 cursor-pointer"
+                    >
+                        <PlusSquare className="w-6 h-6" />
+                        <span className="ml-2 mr-1">Add Apartment</span>
+                    </button>
+                </div>
+
+                {/* Create Apartment Modal */}
+                {showCreateModal && (
+                    <CreateApartmentModal
+                        onClose={() => setShowCreateModal(false)}
+                        onSuccess={() => {
+                            setShowCreateModal(false);
+                            fetchApartments();
+                        }}
+                    />
+                )}
             </main>
         </div>
     );
