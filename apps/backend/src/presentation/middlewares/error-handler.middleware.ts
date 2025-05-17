@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { NotFoundError } from "../../domain/errors/not-found.error";
 import { ValidationError } from "../../domain/errors/validation.error";
-import { LoggerFactory } from "../../config/logger.factory";
+import { ILogger } from "../../domain/interfaces/logger/logger.interface";
 
-const logger = LoggerFactory.getLogger();
+export const createErrorHandlerMiddleware = (logger: ILogger) => (err: Error, req: Request, res: Response, next: NextFunction) => {
 
-export const errorHandlerMiddleware = (err: Error, req: Request, res: Response, next: NextFunction) => {
     // Check if headers have already been sent
     if (res.headersSent) {
         return next(err);

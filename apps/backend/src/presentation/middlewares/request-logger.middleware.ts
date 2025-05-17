@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { LoggerFactory } from '../../config/logger.factory';
+import { ILogger } from '../../domain/interfaces/logger/logger.interface';
 
-const logger = LoggerFactory.getLogger();
-
-export const requestLoggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const createRequestLoggerMiddleware = (logger: ILogger) => (req: Request, res: Response, next: NextFunction) => {
     const startTime = Date.now();
 
     // Log the incoming request

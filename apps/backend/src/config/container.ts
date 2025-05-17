@@ -8,6 +8,7 @@ import { CityRedisCache } from '../data/cache/city-redis.cache';
 import { CountryRedisCache } from '../data/cache/country-redis.cache';
 import { LocalMediaRepository } from '../data/media/local-media.repository';
 import { UnitOfWork } from '../data/database/unit-of-work';
+import { ConsoleLogger } from "../data/logging/console.logger";
 
 // Importing the interfaces
 import { IUnitOfWork } from '../domain/interfaces/unit-of-work.interface';
@@ -15,12 +16,16 @@ import { IAreaCacheRepository } from '../domain/interfaces/repositories/cache/ar
 import { IMediaRepository } from '../domain/interfaces/repositories/media-repository.interface';
 import { ICountryCacheRepository } from '../domain/interfaces/repositories/cache/country-cache-repository.interface';
 import { ICityCacheRepository } from '../domain/interfaces/repositories/cache/city-cache-repository.interface';
+import { ILogger } from '../domain/interfaces/logger/logger.interface';
 
 
 
 
 export class DependencyContainer {
     public static configure(): void {
+
+        // Register the logger as a singleton (same instance throughout the app)
+        container.registerSingleton<ILogger>("ILogger", ConsoleLogger);
 
         // Register UnitOfWork as transient (new instance each time)
         container.register<IUnitOfWork>("IUnitOfWork", {

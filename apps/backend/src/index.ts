@@ -2,11 +2,13 @@ import 'reflect-metadata';
 import express, { Express } from "express";
 import path from "path";
 import { createRouter } from "./presentation/routes";
-import { errorHandlerMiddleware } from './presentation/middlewares/error-handler.middleware';
-import { requestLoggerMiddleware } from './presentation/middlewares/request-logger.middleware';
+import { createErrorHandlerMiddleware } from './presentation/middlewares/error-handler.middleware';
+import { createRequestLoggerMiddleware } from './presentation/middlewares/request-logger.middleware';
 import cors from 'cors';
 import { DependencyContainer } from './config/container';
 import { serverPort } from './config';
+import { container } from 'tsyringe';
+import { ILogger } from './domain/interfaces/logger/logger.interface';
 
 
 
@@ -15,13 +17,14 @@ async function bootstrap() {
     DependencyContainer.configure();
 
     const app: Express = express();
+    const logger = container.resolve<ILogger>("ILogger");
 
     // Middleware to parse JSON bodies
     app.use(express.json());
     app.use(cors());
 
     // Request logger middleware
-    app.use(requestLoggerMiddleware);
+    app.use(createRequestLoggerMiddleware(logger));
 
     // Serve static files from uploads directory
     app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
@@ -30,7 +33,7 @@ async function bootstrap() {
     app.use("/api", createRouter());
 
     // Error-handling middleware (must be after all routes)
-    app.use(errorHandlerMiddleware);
+    app.use(createErrorHandlerMiddleware(logger));
 
     // Start the server
     app.listen(serverPort, () => {
