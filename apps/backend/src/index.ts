@@ -6,6 +6,7 @@ import { errorHandlerMiddleware } from './presentation/middlewares/error-handler
 import { requestLoggerMiddleware } from './presentation/middlewares/request-logger.middleware';
 import cors from 'cors';
 import { DependencyContainer } from './config/container';
+import { serverPort } from './config';
 
 
 
@@ -14,7 +15,6 @@ async function bootstrap() {
     DependencyContainer.configure();
 
     const app: Express = express();
-    const port = process.env.PORT ?? 3000;
 
     // Middleware to parse JSON bodies
     app.use(express.json());
@@ -33,8 +33,8 @@ async function bootstrap() {
     app.use(errorHandlerMiddleware);
 
     // Start the server
-    app.listen(port, () => {
-        console.log(`Server is running on http://localhost:${port}`);
+    app.listen(serverPort, () => {
+        console.log(`Server is running on http://localhost:${serverPort}`);
     });
 }
 
