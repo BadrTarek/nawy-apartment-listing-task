@@ -3,10 +3,9 @@ import { ApartmentsController } from "./controllers/apartments.controller";
 import { CountriesController } from "./controllers/countries.controller";
 import { CitiesController } from "./controllers/cities.controller";
 import { AreasController } from "./controllers/areas.controller";
-import { UnitOfWork } from "../data/database/unit-of-work";
-import { DataSource } from "typeorm";
 import multer from "multer";
-import { LocalMediaRepository } from "../data/media/local-media.repository";
+import { container } from "tsyringe";
+
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -24,39 +23,89 @@ const upload = multer({
     }
 });
 
-export function createRouter(dataSource: DataSource): Router {
+const getController = <T>(Controller: new (...args: any[]) => T) => {
+    return async (req: any, res: any, next: any) => {
+        try {
+            const controller = container.resolve(Controller);
+            if (!req.routeHandler || !(controller as any)[req.routeHandler]) {
+                return next(new Error('Invalid route handler'));
+            }
+            return (controller as any)[req.routeHandler].bind(controller)(req, res, next);
+        } catch (error) {
+            next(error);
+        }
+    };
+};
+
+export function createRouter(): Router {
     const router = Router();
-
-    // Initialize dependencies
-
-    // Initialize controllers
-    const apartmentsController = new ApartmentsController(dataSource);
-    const countriesController = new CountriesController(dataSource);
-    const citiesController = new CitiesController(dataSource);
-    const areasController = new AreasController(dataSource);
 
     // Apartments routes
     router.post(
         "/apartments",
-        upload.array('images', 10), // Max 10 images
-        apartmentsController.create.bind(apartmentsController)
+        upload.array('images', 10),
+        (req: any, res, next) => {
+            req.routeHandler = 'create';
+            next();
+        },
+        getController(ApartmentsController)
     );
     router.get(
         "/apartments",
-        apartmentsController.filter.bind(apartmentsController)
+        (req: any, res, next) => {
+            req.routeHandler = 'filter';
+            next();
+        },
+        getController(ApartmentsController)
     );
 
     // Countries routes
-    router.get("/countries/search", countriesController.search.bind(countriesController));
-    router.get("/countries", countriesController.list.bind(countriesController));
+    router.get("/countries/search",
+        (req: any, res, next) => {
+            req.routeHandler = 'search';
+            next();
+        },
+        getController(CountriesController)
+    );
+    router.get("/countries",
+        (req: any, res, next) => {
+            req.routeHandler = 'list';
+            next();
+        },
+        getController(CountriesController)
+    );
 
     // Cities routes
-    router.get("/cities/search", citiesController.search.bind(citiesController));
-    router.get("/countries/:countryId/cities", citiesController.listByCountry.bind(citiesController));
+    router.get("/cities/search",
+        (req: any, res, next) => {
+            req.routeHandler = 'search';
+            next();
+        },
+        getController(CitiesController)
+    );
+    router.get("/countries/:countryId/cities",
+        (req: any, res, next) => {
+            req.routeHandler = 'listByCountry';
+            next();
+        },
+        getController(CitiesController)
+    );
 
     // Areas routes
-    router.get("/areas/search", areasController.search.bind(areasController));
-    router.get("/cities/:cityId/areas", areasController.listByCity.bind(areasController));
+    router.get("/areas/search",
+        (req: any, res, next) => {
+            req.routeHandler = 'search';
+            next();
+        },
+        getController(AreasController)
+    );
+    router.get("/cities/:cityId/areas",
+        (req: any, res, next) => {
+            req.routeHandler = 'listByCity';
+            next();
+        },
+        getController(AreasController)
+    );
 
     return router;
 }

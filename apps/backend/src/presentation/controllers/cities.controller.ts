@@ -1,18 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { CityService } from "../../application/services/city.service";
-import { DataSource } from "typeorm";
-import { UnitOfWork } from "../../data/database/unit-of-work";
+import { inject, injectable } from "tsyringe";
+import { ICityCacheRepository } from "../../domain/interfaces/repositories/cache/city-cache-repository.interface";
 
+
+@injectable()
 export class CitiesController {
     private readonly cityService: CityService;
-    private readonly unitOfWork: IUnitOfWork;
 
     constructor(
-        dataSource: DataSource
+        @inject("IUnitOfWork") private readonly unitOfWork: IUnitOfWork,
+        @inject("ICityCacheRepository") private readonly cityCacheRepository: ICityCacheRepository,
     ) {
-        this.unitOfWork = new UnitOfWork(dataSource);
-        this.cityService = new CityService(this.unitOfWork);
+        this.cityService = new CityService(unitOfWork, cityCacheRepository);
     }
 
     async search(req: Request, res: Response, next: NextFunction): Promise<void> {

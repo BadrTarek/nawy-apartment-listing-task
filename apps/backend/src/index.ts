@@ -2,17 +2,16 @@ import 'reflect-metadata';
 import express, { Express } from "express";
 import path from "path";
 import { createRouter } from "./presentation/routes";
-import { nawyApartmentDataSource } from "./config";
 import { errorHandlerMiddleware } from './presentation/middlewares/error-handler.middleware';
 import { requestLoggerMiddleware } from './presentation/middlewares/request-logger.middleware';
 import cors from 'cors';
+import { DependencyContainer } from './config/container';
 
 
 
 async function bootstrap() {
-    // Initialize TypeORM connection
-    await nawyApartmentDataSource.initialize();
-    console.log("Database connection initialized");
+    // Initialize DI container
+    DependencyContainer.configure();
 
     const app: Express = express();
     const port = process.env.PORT ?? 3000;
@@ -28,11 +27,10 @@ async function bootstrap() {
     app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
     // Mount routes
-    app.use("/api", createRouter(nawyApartmentDataSource));
+    app.use("/api", createRouter());
 
     // Error-handling middleware (must be after all routes)
     app.use(errorHandlerMiddleware);
-
 
     // Start the server
     app.listen(port, () => {

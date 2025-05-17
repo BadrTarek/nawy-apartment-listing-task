@@ -1,16 +1,13 @@
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { Country } from "../../domain/entities/country.entity";
 import { ICountryCacheRepository } from "../../domain/interfaces/repositories/cache/country-cache-repository.interface";
-import { RedisConnectionFactory } from "../../data/cache/redis-connection.factory";
-import { CountryRedisCache } from "../../data/cache/country-redis.cache";
 
 export class CountryService {
-    private readonly cacheRepository: ICountryCacheRepository;
 
-    constructor(private readonly unitOfWork: IUnitOfWork) {
-        const redis = RedisConnectionFactory.getConnection();
-        this.cacheRepository = new CountryRedisCache(redis);
-    }
+    constructor(
+        private readonly unitOfWork: IUnitOfWork,
+        private readonly cacheRepository: ICountryCacheRepository
+    ) { }
 
     async searchByName(name: string): Promise<Country[]> {
         // Try to get from cache first

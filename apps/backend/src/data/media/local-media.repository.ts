@@ -7,7 +7,7 @@ export class LocalMediaRepository implements IMediaRepository {
     private readonly uploadDir: string;
     private readonly baseUrl: string;
 
-    constructor(uploadDir: string = 'uploads', baseUrl: string = 'http://localhost:3000/uploads') {
+    constructor(uploadDir: string, baseUrl: string) {
         this.uploadDir = uploadDir;
         this.baseUrl = baseUrl;
     }

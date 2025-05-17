@@ -1,16 +1,13 @@
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { Area } from "../../domain/entities/area.entity";
 import { IAreaCacheRepository } from "../../domain/interfaces/repositories/cache/area-cache-repository.interface";
-import { RedisConnectionFactory } from "../../data/cache/redis-connection.factory";
-import { AreaRedisCache } from "../../data/cache/area-redis.cache";
 
 export class AreaService {
-    private readonly cacheRepository: IAreaCacheRepository;
 
-    constructor(private readonly unitOfWork: IUnitOfWork) {
-        const redis = RedisConnectionFactory.getConnection();
-        this.cacheRepository = new AreaRedisCache(redis);
-    }
+    constructor(
+        private readonly unitOfWork: IUnitOfWork,
+        private readonly cacheRepository: IAreaCacheRepository
+    ) { }
 
     async searchByName(name: string, cityId: number): Promise<Area[]> {
         // Try to get from cache first

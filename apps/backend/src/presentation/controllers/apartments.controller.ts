@@ -6,33 +6,29 @@ import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { MediaService } from "../../application/services/media.service";
-import { IMediaRepository } from "../../domain/interfaces/repositories/media-repository.interface";
 import { FilterApartmentsService } from "../../application/services/filter-apartments.service";
 import { ValidationError } from "../../domain/errors/validation.error";
-import { UnitOfWork } from "../../data/database/unit-of-work";
-import { LocalMediaRepository } from "../../data/media/local-media.repository";
-import { DataSource } from "typeorm";
+import { injectable, inject } from "tsyringe";
+import { IMediaRepository } from "../../domain/interfaces/repositories/media-repository.interface";
 
+@injectable()
 export class ApartmentsController {
-    createApartmentService: CreateApartmentService;
-    filterApartmentsService: FilterApartmentsService;
-    mediaService: MediaService;
-    private readonly unitOfWork: IUnitOfWork;
-    private readonly mediaRepository: IMediaRepository;
+
+    private readonly createApartmentService: CreateApartmentService;
+    private readonly filterApartmentsService: FilterApartmentsService;
+    private readonly mediaService: MediaService;
 
     constructor(
-        dataSource: DataSource
+        @inject("IUnitOfWork") private readonly unitOfWork: IUnitOfWork,
+        @inject("IMediaRepository") private readonly mediaRepository: IMediaRepository,
     ) {
-        this.unitOfWork = new UnitOfWork(dataSource);
-        this.mediaRepository = new LocalMediaRepository();
-
-        this.filterApartmentsService = new FilterApartmentsService(this.unitOfWork);
+        this.createApartmentService = new CreateApartmentService(unitOfWork);
+        this.filterApartmentsService = new FilterApartmentsService(unitOfWork);
+        this.mediaService = new MediaService(mediaRepository);
     }
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            this.mediaService = new MediaService(this.mediaRepository);
-
             if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
                 throw new ValidationError('No files uploaded' as any);
             }
@@ -60,7 +56,6 @@ export class ApartmentsController {
             }
 
             await this.unitOfWork.beginTransaction();
-            this.createApartmentService = new CreateApartmentService(this.unitOfWork);
 
             // Create apartment using service
             const apartment = await this.createApartmentService.execute(createApartmentDto);

@@ -1,18 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { CountryService } from "../../application/services/country.service";
-import { UnitOfWork } from "../../data/database/unit-of-work";
-import { DataSource } from "typeorm";
+import { inject, injectable } from "tsyringe";
+import { ICountryCacheRepository } from "../../domain/interfaces/repositories/cache/country-cache-repository.interface";
 
+
+
+@injectable()
 export class CountriesController {
     private readonly countryService: CountryService;
-    private readonly unitOfWork: IUnitOfWork;
 
     constructor(
-        dataSource: DataSource
+        @inject("IUnitOfWork") private readonly unitOfWork: IUnitOfWork,
+        @inject("ICountryCacheRepository") private readonly countryCacheRepository: ICountryCacheRepository,
     ) {
-        this.unitOfWork = new UnitOfWork(dataSource);
-        this.countryService = new CountryService(this.unitOfWork);
+        this.countryService = new CountryService(unitOfWork, countryCacheRepository);
     }
 
     async search(req: Request, res: Response, next: NextFunction): Promise<void> {

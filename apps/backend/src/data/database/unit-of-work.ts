@@ -80,7 +80,7 @@ export class UnitOfWork implements IUnitOfWork {
         if (this.queryRunner) {
             throw new Error('Transaction already in progress');
         }
-
+        await this.dataSource.initialize();
         this.queryRunner = this.dataSource.createQueryRunner();
         await this.queryRunner.connect();
         await this.queryRunner.startTransaction();
@@ -113,6 +113,7 @@ export class UnitOfWork implements IUnitOfWork {
     private async release(): Promise<void> {
         if (this.queryRunner) {
             await this.queryRunner.release();
+            this.dataSource.destroy();
             this.queryRunner = null;
             this._apartmentRepository = null;
             this._apartmentFeatureMappingRepository = null;

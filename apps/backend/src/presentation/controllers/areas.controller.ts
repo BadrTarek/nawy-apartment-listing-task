@@ -2,18 +2,18 @@ import { NextFunction, Request, Response } from "express";
 import { IUnitOfWork } from "../../domain/interfaces/unit-of-work.interface";
 import { AreaService } from "../../application/services/area.service";
 import { ValidationError } from "../../domain/errors/validation.error";
-import { UnitOfWork } from "../../data/database/unit-of-work";
-import { DataSource } from "typeorm";
+import { inject, injectable } from "tsyringe";
+import { IAreaCacheRepository } from "../../domain/interfaces/repositories/cache/area-cache-repository.interface";
 
+@injectable()
 export class AreasController {
     private readonly areaService: AreaService;
-    private readonly unitOfWork: IUnitOfWork;
 
     constructor(
-        dataSource: DataSource
+        @inject("IUnitOfWork") private readonly unitOfWork: IUnitOfWork,
+        @inject("IAreaCacheRepository") private readonly areaCacheRepository: IAreaCacheRepository,
     ) {
-        this.unitOfWork = new UnitOfWork(dataSource);
-        this.areaService = new AreaService(this.unitOfWork);
+        this.areaService = new AreaService(unitOfWork, areaCacheRepository);
     }
 
     async search(req: Request, res: Response, next: NextFunction): Promise<void> {
