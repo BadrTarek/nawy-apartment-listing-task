@@ -8,7 +8,7 @@ interface PropertyCardProps {
   readonly property: Apartment;
 }
 
-export default function PropertyCard({ property }: Readonly<PropertyCardProps>) {
+export default function ApartmentCard({ property }: Readonly<PropertyCardProps>) {
   const [showModal, setShowModal] = useState(false);
 
   return (
