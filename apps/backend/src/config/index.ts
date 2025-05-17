@@ -41,7 +41,7 @@ if (!_env.success) {
 }
 
 
-export const databaseDataSource = new DataSource({
+export const createDatabaseDataSourceFactory = () => new DataSource({
     type: "postgres",
     host: _env.data.DB_HOST,
     port: parseInt(_env.data.DB_PORT.toString()),

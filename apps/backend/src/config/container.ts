@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { container } from 'tsyringe';
-import { databaseDataSource, redisConnection, uploadImageSettings } from ".";
+import { createDatabaseDataSourceFactory, redisConnection, uploadImageSettings } from ".";
 
 // Importing the concrete implementations
 import { AreaRedisCache } from '../data/cache/area-redis.cache';
@@ -30,7 +30,7 @@ export class DependencyContainer {
         // Register UnitOfWork as transient (new instance each time)
         container.register<IUnitOfWork>("IUnitOfWork", {
             useFactory: () => {
-                const unitOfWork = new UnitOfWork(databaseDataSource);
+                const unitOfWork = new UnitOfWork(createDatabaseDataSourceFactory());
                 return unitOfWork;
             }
         });
