@@ -1,84 +1,124 @@
-# Turborepo starter
+# Nawy Apartment Listing Task
 
-This Turborepo starter is maintained by the Turborepo core team.
+## Overview
+A modern full-stack application for managing apartment listings, built with TypeScript and containerized with Docker. The application features a Next.js frontend for a responsive user interface and a Node.js backend with PostgreSQL for data persistence and Redis for caching.
 
-## Using this example
+## Tech Stack
 
-Run the following command:
+### Backend
+- Node.js with Express.js
+- TypeScript
+- PostgreSQL with TypeORM
+- Redis for caching
+- Class-based architecture with dependency injection (tsyringe)
+- Jest for testing
+- Input validation with class-validator and zod
+- File upload handling with Multer
 
-```sh
-npx create-turbo@latest
+### Frontend
+- Next.js 15.3.2
+- React 19
+- TypeScript
+- TailwindCSS
+- Lucide icons
+- ESLint
+
+### Infrastructure
+- Docker and Docker Compose
+- PostgreSQL 15
+- Redis 7
+- Automated testing
+- Migration system
+
+## Prerequisites
+- Docker and Docker Compose
+- Node.js 18 or higher (for local development)
+- yarn or npm
+
+## Getting Started
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/nawy-apartment-listing-task.git
+cd nawy-apartment-listing-task
 ```
 
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+2. Start the application using Docker Compose:
+```bash
+docker-compose up
 ```
 
-### Develop
+The application will be available at:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:3300
+- PostgreSQL: localhost:5555
+- Redis: localhost:6666
 
-To develop all apps and packages, run the following command:
+### Local Development Setup
 
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+#### Backend
+```bash
+cd backend
+yarn install
+yarn dev
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
+#### Frontend
+```bash
+cd frontend
+yarn install
+yarn dev
 ```
-npx turbo link
+
+
+
+## Environment Variables
+
+### Backend
+```env
+# Database
+DB_HOST=postgres
+DB_PORT=5555
+DB_USERNAME=nawy
+DB_PASSWORD=nawy123
+DB_NAME=nawy_apartments
+
+# Redis
+REDIS_HOST=redis
+REDIS_PORT=6666
+REDIS_PASSWORD=nawy123
+REDIS_KEY_PREFIX=nawy
+
+# Server
+SERVER_URL=http://localhost:3300
+SERVER_UPLOADS_PATH=uploads
+SERVER_PORT=3300
 ```
 
-## Useful Links
+### Frontend
+```env
+API_BASE_URL=http://localhost:3300
+```
 
-Learn more about the power of Turborepo:
+## Database Migrations
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+Run database migrations:
+```bash
+cd backend
+yarn migration:run
+```
+
+Generate new migration:
+```bash
+yarn migration:generate src/migrations/MigrationName
+```
+
+## Testing
+
+### Backend Tests
+```bash
+cd backend
+yarn test
+# or with coverage
+yarn test:coverage
+```
