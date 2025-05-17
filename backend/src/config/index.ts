@@ -73,3 +73,5 @@ export const uploadImageSettings = {
 }
 
 export const serverPort = _env.data.SERVER_PORT;
+
+export const dataSource = createDatabaseDataSourceFactory();

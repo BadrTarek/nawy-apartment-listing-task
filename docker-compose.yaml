@@ -49,6 +49,17 @@ services:
     depends_on:
       - postgres
       - redis
+    command: >
+      sh -c "
+        echo 'Waiting for postgres to be ready...' &&
+        sleep 5 &&
+        cd /app &&
+        yarn migration:run &&
+        echo 'Running data seed...' &&
+        yarn seed:run &&
+        echo 'Starting backend service...' &&
+        yarn run dev
+      "
     restart: unless-stopped
 
   frontend:
