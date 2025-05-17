@@ -31,8 +31,8 @@ COPY package.json .
 RUN yarn install --production
 
 # Copy built assets from builder stage
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/uploads ./uploads
+COPY --from=builder /app/. .
+
 
 # Create volume mount point
 VOLUME [ "/app/uploads" ]
