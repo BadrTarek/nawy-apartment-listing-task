@@ -2,15 +2,15 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { ApartmentsService } from '../services/apartments.service';
-import FilterComponent from '../components/FilterComponent';
-import SortComponent from '../components/SortComponent';
-import PropertyCard from '../components/PropertyCard';
-import Pagination from '../components/Pagination';
+import FilterComponent from './FilterComponent';
+import SortComponent from './SortComponent';
+import ApartmentCard from './ApartmentCard';
+import Pagination from './Pagination';
 import { ApartmentResponse } from '../models/dtos/apartment.dto';
 import { ApartmentFilters } from '../models/common/filter.model';
-import Spinner from '../components/Spinner';
-import CreateApartmentModal from '../components/CreateApartmentModal';
-import ErrorPopup from '../components/ErrorPopup';
+import Spinner from './Spinner';
+import CreateApartmentModal from './CreateApartmentModal';
+import ErrorPopup from './ErrorPopup';
 import { PlusSquare } from 'lucide-react';
 
 export default function ApartmentsClient() {
@@ -107,7 +107,7 @@ export default function ApartmentsClient() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         {apartments.data.map((property) => (
-                            <PropertyCard key={property.id} property={property} />
+                            <ApartmentCard key={property.id} property={property} />
                         ))}
                     </div>
                 )}
